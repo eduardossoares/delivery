@@ -1,26 +1,27 @@
-import { Metadata } from "next";
 import { ReactNode } from "react";
-import "@/app/globals.css";
+import { Metadata } from "next";
 
-import { AuthProvider } from "@/contexts/AuthContext";
 import { Geist } from "next/font/google";
 
+import { AuthProvider } from "../../../contexts/AuthContext";
+
 const geistSans = Geist({
-  subsets: ["latin"],
   variable: "--font-geist-sans",
+  subsets: ["latin"],
+  weight: "variable",
 });
 
 export const metadata: Metadata = {
-  title: "Anota Já - Dashboard",
-  description: "Gerencie seu catálogo online!",
+  title: "Anota Já - Faça seu Login!",
+  description: "Seu serviço de delivery!",
 };
 
-export default function DashboardLayout({
+export default function LoginLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="pt-BR" className={geistSans.className}>
-      <body className="antialiaseded">
+      <body className="antialised">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
