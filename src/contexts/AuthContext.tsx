@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         path: "/",
       });
 
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       throw new Error("Credential error!");
     }
