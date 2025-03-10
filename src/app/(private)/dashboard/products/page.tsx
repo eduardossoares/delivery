@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useContext } from "react";
 import { ModalContext } from "@/contexts/ModalContext";
@@ -30,6 +30,24 @@ import { AiFillEdit } from "react-icons/ai";
 
 import AddCartOrCategoryButton from "@/components/AddItemOrCategoryButton";
 import CreateProductModal from "@/components/CreateProductModal";
+import { setupAPIClient } from "@/services/api";
+import Image from "next/image";
+
+type Product = {
+  id: string;
+  banner: string;
+  name: string;
+  price: string;
+  description: string;
+  category_id: string;
+  created_at: Date;
+};
+
+type Category = {
+  id: string;
+  name: string;
+  products: Product[];
+};
 
 export default function Page() {
   const { closeModal, openModal, openRemoveItemModal, isRemoveItemModalOpen } =
@@ -39,6 +57,30 @@ export default function Page() {
     useState(false);
 
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
+
+  const [categories, setCategories] = useState<Category[]>();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const [getProductId, setGetProductId] = useState("");
+
+  const api = setupAPIClient();
+
+  useEffect(() => {
+    const getCategories = async () => {
+      await api
+        .get("/category")
+        .then((response) => setCategories(response.data))
+        .catch((error) => console.log(error));
+    };
+    getCategories();
+    const getProducts = async () => {
+      await api
+        .get("/product")
+        .then((response) => setProducts(response.data))
+        .catch((error) => console.log(error));
+    };
+    getProducts();
+  }, [products]);
 
   const openCreateProductModal = () => {
     openModal();
@@ -65,6 +107,14 @@ export default function Page() {
     setIsEditProductModalOpen(false);
   };
 
+  const formatCurrency = (value: number) => {
+    const valueToFormat = Number(value);
+    return valueToFormat.toLocaleString("pt-br", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
   return (
     <div
       className="flex flex-col justify-center items-center w-full 
@@ -84,63 +134,92 @@ export default function Page() {
               </h1>
               <div className="flex-1 h-0.5 bg-zinc-400"></div>
             </div>
-            <Table>
-              <TableCaption>Sua lista de Hambúrgueres.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-start">Produto</TableHead>
-                  <TableHead className="text-start max-sm:hidden">
-                    Criado
-                  </TableHead>
-                  <TableHead className="text-start">Preço</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow className="cursor-pointer">
-                  <TableCell className="text-start">
-                    <div className="flex items-center gap-x-1">
-                      <div className="w-4 h-4 bg-orangePrimary"></div>
-                      <p className="truncate w-12 sm:w-auto">Mega Smash</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-start max-sm:hidden">
-                    10/02/25
-                  </TableCell>
-                  <TableCell className="text-start">R$29,99</TableCell>
-                  <TableCell className="flex items-center justify-end gap-x-6 lg:gap-x-3">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <AiFillEdit
-                            onClick={openEditProductModal}
-                            className="text-orangePrimary"
-                            size={20}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Editar Categoria</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <FaTrashAlt
-                            onClick={openRemoveModal}
-                            className="text-orangePrimary"
-                            size={15}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Remover Produto</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+
+            <div className="space-y-20">
+              {categories?.map((category) => (
+                <div className="space-y-4" key={category.id}>
+                  <h1 className="text-start font-bold text-xl text-orangePrimary">
+                    {category.name}
+                  </h1>
+                  <Table>
+                    <TableCaption>Sua lista de {category.name}.</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-start w-[33%]">Produto</TableHead>
+                        <TableHead className="text-start w-[33%]">Preço</TableHead>
+                        <TableHead className="text-right w-[33%]">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {products?.map((product) => {
+                        if (product.category_id === category.id) {
+                          return (
+                            <TableRow
+                              key={product.id}
+                              className="cursor-pointer"
+                            >
+                              <TableCell className="text-start">
+                                <div className="flex items-center gap-x-2">
+                                  <Image
+                                    width={32}
+                                    height={32}
+                                    className="rounded-full w-6 h-6"
+                                    alt="Hi"
+                                    src={`http://localhost:3333/files/${product.banner}`}
+                                  />
+                                  <p className="truncate w-12 sm:w-auto">
+                                    {product.name}
+                                  </p>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-start">
+                                {formatCurrency(Number(product.price))}
+                              </TableCell>
+                              <TableCell className="flex items-center justify-end gap-x-6 lg:gap-x-3">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <AiFillEdit
+                                        onClick={() => {
+                                          openEditProductModal();
+                                          setGetProductId(product.id);
+                                        }}
+                                        className="text-orangePrimary"
+                                        size={20}
+                                      />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Editar Categoria</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <FaTrashAlt
+                                        onClick={() => {
+                                          openRemoveModal();
+                                          setGetProductId(product.id);
+                                        }}
+                                        className="text-orangePrimary"
+                                        size={15}
+                                      />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Remover Produto</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -153,10 +232,15 @@ export default function Page() {
         <CreateProductModal closeModalFunction={closeCreateProductModal} />
       )}
 
-      {isRemoveItemModalOpen && <RemoveItemModal notifyMessage="✔️ Produto removido com sucesso!" />}
+      {isRemoveItemModalOpen && (
+        <RemoveItemModal isProduct={true} productId={getProductId} />
+      )}
 
       {isEditProductModalOpen && (
-        <EditProductModal closeModalFunction={closeEditProductModal} />
+        <EditProductModal
+          productId={getProductId}
+          closeModalFunction={closeEditProductModal}
+        />
       )}
     </div>
   );

@@ -6,9 +6,16 @@ import Button from "./Button";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { setupAPIClient } from "@/services/api";
+import toast from "react-hot-toast";
+
+import { useContext } from "react";
+import { ModalContext } from "@/contexts/ModalContext";
 
 interface EditProductModalProps {
   closeModalFunction: () => void;
+  productId: string;
 }
 
 const schema = z.object({
@@ -21,18 +28,42 @@ type FormData = z.infer<typeof schema>;
 
 export default function EditProductModal({
   closeModalFunction,
+  productId,
 }: EditProductModalProps) {
   const {
-    register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
 
-  const createCategoryModal = () => {
-    alert("product edited");
+  const { closeModal } = useContext(ModalContext);
+
+  const [newProductName, setNewProductName] = useState("");
+  const [newProductPrice, setNewProductPrice] = useState("");
+  const [newProductDescription, setNewProductDescription] = useState("");
+
+  const api = setupAPIClient();
+
+  const editProduct = async () => {
+    await api
+      .put(`/product/${productId}`, {
+        name: newProductName,
+        price: newProductPrice,
+        description: newProductDescription,
+      })
+      .then(() => {
+        closeModal();
+        closeModalFunction();
+        toast.success("Produto alterado com sucesso!");
+      })
+      .catch(() => {
+        closeModal();
+        closeModalFunction();
+        toast.error("Erro ao alterar o produto!");
+      });
   };
 
   return (
@@ -50,7 +81,7 @@ export default function EditProductModal({
 
           <form
             className="w-full flex flex-col space-y-4"
-            onSubmit={handleSubmit(createCategoryModal)}
+            onSubmit={handleSubmit(editProduct)}
           >
             <div className="flex flex-col text-start">
               <label className="text-zinc-400 font-medium" htmlFor="product">
@@ -59,10 +90,16 @@ export default function EditProductModal({
               <input
                 id="product"
                 className="bg-grayPrimary border-2 border-zinc-200 rounded-md h-10 px-4
-            placeholder:opacity-60 placeholder:font-light"
+                placeholder:opacity-60 placeholder:font-light"
                 type="text"
                 placeholder="Ex: Mega Smash"
-                {...register("newProductName")}
+                onChange={(e) => {
+                  setValue("newProductName", e.target.value, {
+                    shouldValidate: true,
+                  });
+                  setNewProductName(e.target.value);
+                }}
+                value={newProductName}
               />
               {errors.newProductName && (
                 <p className="text-sm text-red-500">
@@ -81,7 +118,13 @@ export default function EditProductModal({
             placeholder:opacity-60 placeholder:font-light"
                 type="text"
                 placeholder="Ex: 29.90"
-                {...register("newPrice")}
+                onChange={(e) => {
+                  setValue("newPrice", e.target.value, {
+                    shouldValidate: true,
+                  });
+                  setNewProductPrice(e.target.value);
+                }}
+                value={newProductPrice}
               />
               {errors.newPrice && (
                 <p className="text-sm text-red-500">
@@ -102,7 +145,13 @@ export default function EditProductModal({
                 className="bg-grayPrimary border-2 border-zinc-200 rounded-md h-24 px-4 py-1
                 placeholder:opacity-60 placeholder:font-light"
                 placeholder="Ex: Hambúrguer duplo de carne e cheddar."
-                {...register("newDescription")}
+                onChange={(e) => {
+                  setValue("newDescription", e.target.value, {
+                    shouldValidate: true,
+                  });
+                  setNewProductDescription(e.target.value);
+                }}
+                value={newProductDescription}
               />
               {errors.newDescription && (
                 <p className="text-sm text-red-500">

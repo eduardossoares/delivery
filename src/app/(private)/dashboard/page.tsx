@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 
 import { useContext } from "react";
 import { ModalContext } from "@/contexts/ModalContext";
@@ -26,12 +27,69 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import ConfirmationModal from "@/components/ConfirmationModal";
+
+import { setupAPIClient } from "@/services/api";
+
+export type Order = {
+  id: string;
+  name: string;
+  phone: string;
+  street_adress: string;
+  number_adress: string;
+  reference_adress: string | null;
+  note: string | null;
+  payment_type: string;
+  status: boolean;
+  draft: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  banner: string;
+  created_at: string;
+  updated_at: string;
+  category_id: string;
+};
+
+export type OrderDetail = {
+  id: string;
+  amount: number;
+  order_id: string;
+  product_id: string;
+  product: Product;
+  order: Order;
+};
 
 export default function Page() {
   const { closeModal, openModal } = useContext(ModalContext);
 
   const [isOrderDetailModalOpen, setIsOrderDetailModalOpen] = useState(true);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [orderId, setOrderId] = useState("");
+
+  const api = setupAPIClient();
+
+  let orderNumber = 1;
+
+  useEffect(() => {
+    const getOrders = async () => {
+      await api
+        .get("/order")
+        .then((response) => setOrders(response.data))
+        .catch((error) => console.log(error));
+    };
+
+    getOrders(); // Fetch orders immediately on mount
+
+    const intervalId = setInterval(getOrders, 10000); // Fetch orders every 10 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
 
   const openOrderDetail = () => {
     openModal();
@@ -41,6 +99,18 @@ export default function Page() {
   const closeOrderDetail = () => {
     closeModal();
     setTimeout(() => setIsOrderDetailModalOpen(false), 400);
+  };
+
+  const formatDate = (dateToFormat: string) => {
+    const date = new Date(dateToFormat);
+    const brazilTime = new Date(date.setHours(date.getUTCHours() - 3));
+    const formatted = brazilTime.toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    return formatted;
   };
 
   return (
@@ -53,21 +123,6 @@ export default function Page() {
       </h1>
 
       <div className="w-full px-4 lg:px-24 flex flex-col items-center justify-center gap-y-4">
-        <div
-          className="w-full bg-orangePrimary rounded-md p-4 flex-row justify-between
-          gap-y-8 items-center hidden
-          text-white"
-        >
-          <p className="font-semibold">Pedido #1</p>
-          <div className="flex items-center gap-x-8">
-            <div className="flex items-center gap-x-1">
-              <FaClock size={18} />
-              <p className="font-bold">19:33</p>
-            </div>
-            <IoIosArrowForward size={28} />
-          </div>
-        </div>
-
         <div className="w-full">
           <Table>
             <TableCaption>
@@ -80,35 +135,51 @@ export default function Page() {
                 <TableHead className="text-start max-sm:hidden">
                   Cliente
                 </TableHead>
-                <TableHead className="text-start max-sm:hidden">
-                  Itens
-                </TableHead>
                 <TableHead className="text-start">Total</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="cursor-pointer" onClick={openOrderDetail}>
-                <TableCell className="text-start">#1</TableCell>
-                <TableCell className="text-start">19:33</TableCell>
-                <TableCell className="text-start max-sm:hidden">
-                  Eduardo
-                </TableCell>
-                <TableCell className="text-start max-sm:hidden">4</TableCell>
-                <TableCell className="text-start">R$79,99</TableCell>
-                <TableCell className="flex items-center justify-end gap-x-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <BsThreeDots className="text-orangePrimary" size={20} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Ver Pedido</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-              </TableRow>
+              {orders.map(
+                (order) =>
+                  order.draft === false &&
+                  order.status === false && (
+                    <TableRow
+                      key={order.id}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        openOrderDetail();
+                        setOrderId(order.id);
+                      }}
+                    >
+                      <TableCell className="text-start">
+                        #{orderNumber++}
+                      </TableCell>
+                      <TableCell className="text-start">
+                        {formatDate(order.created_at)}
+                      </TableCell>
+                      <TableCell className="text-start max-sm:hidden">
+                        {order.name}
+                      </TableCell>
+                      <TableCell className="text-start">R$79,99</TableCell>
+                      <TableCell className="flex items-center justify-end gap-x-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <BsThreeDots
+                                className="text-orangePrimary"
+                                size={20}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Ver Pedido</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </TableCell>
+                    </TableRow>
+                  )
+              )}
             </TableBody>
           </Table>
         </div>
@@ -116,6 +187,7 @@ export default function Page() {
 
       {isOrderDetailModalOpen && (
         <OrderDetailModal
+          orderId={orderId}
           closeModalFunction={closeOrderDetail}
         />
       )}

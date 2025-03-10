@@ -35,7 +35,6 @@ export function ModalProvider({ children }: { children: ReactNode }) {
 
   const openRemoveItemModal = () => {
     setIsRemoveItemModalOpen(true);
-    console.log(isRemoveItemModalOpen);
   };
 
   return (

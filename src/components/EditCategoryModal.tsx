@@ -1,14 +1,23 @@
-import Modal from "./Modal";
-import { IoMdClose } from "react-icons/io";
-
-import Button from "./Button";
+"use client";
+import { useState, useContext } from "react";
 
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { setupAPIClient } from "@/services/api";
+import { ModalContext } from "@/contexts/ModalContext";
+
+import Modal from "./Modal";
+import Button from "./Button";
+
+import { IoMdClose } from "react-icons/io";
+
+import toast from "react-hot-toast";
+
 interface EditCategoryModal {
   closeModalFunction: () => void;
+  id: string;
 }
 
 const schema = z.object({
@@ -19,18 +28,35 @@ type FormData = z.infer<typeof schema>;
 
 export default function EditCategoryModal({
   closeModalFunction,
+  id,
 }: EditCategoryModal) {
   const {
-    register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
 
-  const createCategoryModal = () => {
-    alert("category edited");
+  const { closeModal } = useContext(ModalContext);
+
+  const [categoryName, setCategoryName] = useState("");
+
+  const api = setupAPIClient();
+
+  const editCategoryModal = async () => {
+    try {
+      await api.put(`/category/${id}`, {
+        name: categoryName,
+      });
+      toast.success("Categoria atualizada com sucesso!");
+      closeModalFunction();
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao atualizar categoria!");
+      closeModalFunction();
+    }
   };
 
   return (
@@ -48,7 +74,7 @@ export default function EditCategoryModal({
 
           <form
             className="w-full flex flex-col space-y-4"
-            onSubmit={handleSubmit(createCategoryModal)}
+            onSubmit={handleSubmit(editCategoryModal)}
           >
             <div className="flex flex-col text-start">
               <label className="text-zinc-400 font-medium" htmlFor="product">
@@ -56,11 +82,17 @@ export default function EditCategoryModal({
               </label>
               <input
                 id="product"
+                value={categoryName}
+                onChange={(e) => {
+                  setCategoryName(e.target.value);
+                  setValue("newCategoryName", e.target.value, {
+                    shouldValidate: true,
+                  });
+                }}
                 className="bg-grayPrimary border-2 border-zinc-200 rounded-md h-10 px-4
             placeholder:opacity-60 placeholder:font-light"
                 type="text"
                 placeholder="Ex: Bebidas"
-                {...register("newCategoryName")}
               />
               {errors.newCategoryName && (
                 <p className="text-sm text-red-500">

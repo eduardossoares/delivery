@@ -14,6 +14,9 @@ import { IoIosMenu } from "react-icons/io";
 
 import Link from "next/link";
 
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+
 type Item = {
   title: string;
   path: string;
@@ -46,17 +49,25 @@ const items: Item[] = [
 export default function Sidebar() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
+  const { signOut } = useContext(AuthContext);
+
   return (
     <div>
-      <IoIosMenu onClick={ () => setIsSidebarVisible(true) }
-      className={`cursor-pointer absolute right-2 top-2 text-orangePrimary lg:hidden`} size={38} />
+      <IoIosMenu
+        onClick={() => setIsSidebarVisible(true)}
+        className={`cursor-pointer absolute right-2 top-2 text-orangePrimary lg:hidden`}
+        size={38}
+      />
 
       <aside
         className={`w-full bg-graySecondary absolute left-[-100%] lg:left-[0%] h-screen flex flex-col items-center 
         justify-between lg:justify-normal lg:gap-y-24 lg:border-r-2 lg:border-r-zinc-200 lg:border-opacity-50 z-50
-        duration-500 ease-in-out py-24 lg:py-14 lg:relative lg:w-64 ${isSidebarVisible && "left-[0%]"}`}
+        duration-500 ease-in-out py-24 lg:py-14 lg:relative lg:w-64 ${
+          isSidebarVisible && "left-[0%]"
+        }`}
       >
-        <IoClose onClick={() => setIsSidebarVisible(false)}
+        <IoClose
+          onClick={() => setIsSidebarVisible(false)}
           className="cursor-pointer absolute right-2 top-2 text-orangePrimary lg:hidden"
           size={38}
         />
@@ -64,22 +75,28 @@ export default function Sidebar() {
         <Image alt="Logo" src={logoImg} className="w-20 lg:w-16" />
         <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:w-full">
           {items.map((item, index) => (
-            <Link onClick={ () => setIsSidebarVisible(false) }
+            <Link
+              onClick={() => setIsSidebarVisible(false)}
               className="flex flex-row items-center gap-x-2 text-zinc-500 font-medium
               lg:hover:bg-gray-200 lg:pl-6 lg:py-2 duration-500"
               key={index}
               href={item.path}
             >
               {item.icon}
-              <p className="text-xl lg:text-base lg:font-normal">{item.title}</p>
+              <p className="text-xl lg:text-base lg:font-normal">
+                {item.title}
+              </p>
             </Link>
           ))}
         </div>
 
-        <div className="flex items-center gap-x-1 cursor-pointer lg:absolute bottom-8">
+        <Link
+          className="flex items-center gap-x-1 cursor-pointer lg:absolute bottom-8"
+          href={"/sign-in"} onClick={signOut}
+        >
           <PiSignOut className="text-xl lg:text-lg text-orangePrimary" />
           <p className="text-lg font-normal text-zinc-500 lg:text-base">Sair</p>
-        </div>
+        </Link>
       </aside>
     </div>
   );

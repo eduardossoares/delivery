@@ -1,14 +1,18 @@
-import { SlCloudUpload } from "react-icons/sl";
-import Modal from "./Modal";
-import { IoMdClose } from "react-icons/io";
-
-import Button from "./Button";
+import React, { useState } from "react";
 
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import motion from "motion/react";
+import { setupAPIClient } from "@/services/api";
+
+import { SlCloudUpload } from "react-icons/sl";
+import { IoMdClose } from "react-icons/io";
+
+import Modal from "./Modal";
+import Button from "./Button";
+
+import toast from "react-hot-toast";
 
 interface CreateCategoryModal {
   closeModalFunction: () => void;
@@ -24,16 +28,29 @@ export default function CreateCategoryModal({
   closeModalFunction,
 }: CreateCategoryModal) {
   const {
-    register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
 
-  const createCategoryModal = () => {
-    alert("category created");
+  const [categoryName, setCategoryName] = useState("");
+
+  const api = setupAPIClient();
+
+  const createCategory = async () => {
+    try {
+      await api.post("/category", {
+        name: categoryName
+      });
+      setCategoryName("");
+      closeModalFunction();
+      toast.success("Categoria criada com sucesso!");
+    } catch(error) {
+      return console.log(error);
+    }
   };
 
   return (
@@ -58,19 +75,25 @@ export default function CreateCategoryModal({
 
           <form
             className="w-full flex flex-col"
-            onSubmit={handleSubmit(createCategoryModal)}
+            onSubmit={handleSubmit(createCategory)}
           >
             <div className="flex flex-col text-start">
               <label className="text-zinc-400 font-medium" htmlFor="product">
                 Nome da categoria:
               </label>
               <input
+                value={categoryName}
+                onChange={(e) => {
+                  setCategoryName(e.target.value);
+                  setValue("categoryName", e.target.value, {
+                    shouldValidate: true,
+                  });
+                }}
                 id="product"
                 className="bg-grayPrimary border-2 border-zinc-200 rounded-md h-10 px-4
-            placeholder:opacity-60 placeholder:font-light"
+                placeholder:opacity-60 placeholder:font-light"
                 type="text"
                 placeholder="Ex: Mega Smash"
-                {...register("categoryName")}
               />
               {errors.categoryName && (
                 <p className="text-sm text-red-500">

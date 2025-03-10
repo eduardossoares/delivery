@@ -10,7 +10,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Anota Já - Faça seu Pedido!",
+  title: "Anota Já - Faça seu pedido!",
   description: "Seu serviço de delivery!",
 };
 

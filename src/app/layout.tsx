@@ -2,10 +2,7 @@ import { Metadata } from "next";
 import { ReactNode } from "react";
 import "@/app/globals.css";
 
-import { AuthProvider } from "@/contexts/AuthContext";
 import { Geist } from "next/font/google";
-
-import Sidebar from "@/components/Sidebar";
 
 const geistSans = Geist({
   subsets: ["latin"],

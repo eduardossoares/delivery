@@ -7,7 +7,7 @@ import AddCartOrCategoryButton from "@/components/AddItemOrCategoryButton";
 import CreateCategoryModal from "@/components/CreateCategoryModal";
 import EditCategoryModal from "@/components/EditCategoryModal";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ModalContext } from "@/contexts/ModalContext";
 
 import {
@@ -30,15 +30,40 @@ import { useState } from "react";
 import { setTimeout } from "timers";
 import RemoveItemModal from "@/components/RemoveItemModal";
 
+import { setupAPIClient } from "@/services/api";
+import { Stringifier } from "postcss";
+
+type Category = {
+  id: string;
+  name: string;
+  products: number;
+  created_at: string;
+};
+
 export default function Page() {
-  const { closeModal, openModal, isRemoveItemModalOpen, openRemoveItemModal } =
-    useContext(ModalContext);
+  const { closeModal, openModal } = useContext(ModalContext);
 
   const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
     useState(false);
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
   const [isRemoveCategoryModalOpen, setIsRemoveCategoryModalOpen] =
     useState(false);
+
+  const [categories, setCategories] = useState<Category[]>();
+  const [getCategoryId, setGetCategoryId] = useState("");
+
+  const api = setupAPIClient();
+
+  useEffect(() => {
+    api
+      .get("/category")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [categories]);
 
   const openCreateCategoryModal = () => {
     setIsRemoveCategoryModalOpen(false);
@@ -67,6 +92,15 @@ export default function Page() {
     setIsRemoveCategoryModalOpen(true);
   };
 
+  const formateDate = (dateToFormat: string) => {
+    const date = new Date(dateToFormat);
+    return date.toLocaleString("pt--BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
+
   return (
     <div
       className="flex flex-col justify-center items-center w-full 
@@ -86,56 +120,54 @@ export default function Page() {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-start">Categoria</TableHead>
-                <TableHead className="text-start max-sm:hidden">
-                  Criado
-                </TableHead>
-                <TableHead className="text-start">Produtos</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="cursor-pointer">
-                <TableCell className="text-start">
-                  <div className="flex items-center gap-x-1">
-                    <div className="w-4 h-4 bg-orangePrimary"></div>
-                    <p>Hambúrgueres</p>
-                  </div>
-                </TableCell>
-                <TableCell className="text-start max-sm:hidden">
-                  10/02/25
-                </TableCell>
-                <TableCell className="text-start">10</TableCell>
-                <TableCell className="flex items-center justify-end gap-x-6 lg:gap-x-3">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <AiFillEdit
-                          onClick={openEditModal}
-                          className="text-orangePrimary"
-                          size={20}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Editar Categoria</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <FaTrashAlt
-                          onClick={openRemoveCategoryModal}
-                          className="text-orangePrimary"
-                          size={15}
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Remover Categoria</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-              </TableRow>
+              {categories?.map((item) => (
+                <TableRow key={item.id} className="cursor-pointer">
+                  <TableCell className="text-start">
+                    <div className="flex items-center gap-x-1">
+                      <div className="w-4 h-4 bg-orangePrimary rounded-full hidden"></div>
+                      <p>{item.name}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="flex items-center justify-end gap-x-6 lg:gap-x-3">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger
+                        onClick={() => setGetCategoryId(item.id)}>
+                          <AiFillEdit
+                            onClick={openEditModal}
+                            className="text-orangePrimary"
+                            size={20}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Editar Categoria</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <FaTrashAlt
+                            onClick={() => {
+                              setGetCategoryId(item.id);
+                              openRemoveCategoryModal();
+                            }}
+                            className="text-orangePrimary"
+                            size={15}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Remover Categoria</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
@@ -150,11 +182,14 @@ export default function Page() {
       )}
 
       {isEditCategoryModalOpen && (
-        <EditCategoryModal closeModalFunction={closeEditModal} />
+        <EditCategoryModal id={getCategoryId} closeModalFunction={closeEditModal} />
       )}
 
       {isRemoveCategoryModalOpen && (
-        <RemoveItemModal notifyMessage="✔️ Categoria removida com sucesso!" />
+        <RemoveItemModal
+          isCategory={true}
+          categoryId={getCategoryId}
+        />
       )}
     </div>
   );

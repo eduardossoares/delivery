@@ -2,13 +2,10 @@ import axios, { AxiosError } from "axios";
 import { parseCookies } from "nookies";
 import { AuthTokenError } from "./errors/AuthTokenError";
 
-import { AuthContext } from "@/contexts/AuthContext";
-import { useContext } from "react";
+// Preciso adicionar o Logout
 
 export const setupAPIClient = (ctx = undefined) => {
   let cookies = parseCookies(ctx);
-
-  const { signOut } = useContext(AuthContext);
 
   const api = axios.create({
     baseURL: "http://localhost:3333",
@@ -23,9 +20,7 @@ export const setupAPIClient = (ctx = undefined) => {
     },
     (error: AxiosError) => {
       if (error.response?.status === 401) {
-        signOut();
         if (typeof window !== undefined) {
-          signOut();
         } else {
           return Promise.reject(new AuthTokenError());
         }
