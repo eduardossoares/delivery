@@ -1,6 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import logoImg from "@/../public/logo.svg";
+import illustration from "@/../public/illustration.svg";
+
 import Button from "@/components/Button";
 import LoginInputLabel from "@/components/LoginInputLabel";
 
@@ -23,7 +26,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function SignIn() {
-  const { user, signIn } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
 
   const {
     register,
@@ -56,9 +59,11 @@ export default function SignIn() {
       justify-center"
       >
         <Image
+          width={5}
+          height={5}
           className="w-96 xl:w-[500px]"
           alt="Ilustração"
-          src="/logo.svg"
+          src={illustration}
         />
       </div>
 
@@ -66,7 +71,7 @@ export default function SignIn() {
         className="w-full md:w-[46rem] lg:w-[54rem] flex flex-col items-center justify-center 
       px-4 lg:px-16 gap-y-24"
       >
-        <Image alt="Logo" src="/illustration.svg" />
+        <Image width={100} height={100} alt="Logo" src={logoImg} />
 
         <div className="w-full text-center">
           <h1 className="font-bold text-2xl">Seja Bem-Vindo!</h1>
@@ -104,7 +109,9 @@ export default function SignIn() {
             </Button>
 
             {isWarningLoginMessageVisible && (
-              <p className="text-red-500 font-semibold">Email ou senha incorretos.</p>
+              <p className="text-red-500 font-semibold">
+                Email ou senha incorretos.
+              </p>
             )}
           </div>
         </form>
