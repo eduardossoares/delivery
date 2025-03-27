@@ -15,8 +15,7 @@ import { FaCaretRight } from "react-icons/fa";
 
 import { setupAPIClient } from "@/services/api";
 
-import { OrderDetail } from "@/app/(private)/dashboard/page";
-import { get } from "node:http";
+import { OrderDetail } from "@/types/order";
 
 interface OrderDetailModalProps {
   orderId?: string;
@@ -232,6 +231,7 @@ export default function OrderDetailModal({
           </div>
         </Modal>
       )}
+      
       {isConfirmationModalOpen && (
         <ConfirmationModal
           isACloseOrder={true}

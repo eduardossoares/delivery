@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { ModalContext } from "@/contexts/ModalContext";
 
-import { IoIosArrowForward } from "react-icons/io";
-import { FaClock } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 
 import OrderDetailModal from "@/components/OrderDetailModal";
@@ -28,42 +26,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { setupAPIClient } from "@/services/api";
+import { setupAPIClient } from "@/services/api"
 
-export type Order = {
-  id: string;
-  name: string;
-  phone: string;
-  street_adress: string;
-  number_adress: string;
-  reference_adress: string | null;
-  note: string | null;
-  payment_type: string;
-  status: boolean;
-  draft: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-export type Product = {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  banner: string;
-  created_at: string;
-  updated_at: string;
-  category_id: string;
-};
-
-export type OrderDetail = {
-  id: string;
-  amount: number;
-  order_id: string;
-  product_id: string;
-  product: Product;
-  order: Order;
-};
+import { Order } from "@/types/order";
 
 export default function Page() {
   const { closeModal, openModal } = useContext(ModalContext);

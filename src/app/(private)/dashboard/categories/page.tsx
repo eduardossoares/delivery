@@ -31,14 +31,8 @@ import { setTimeout } from "timers";
 import RemoveItemModal from "@/components/RemoveItemModal";
 
 import { setupAPIClient } from "@/services/api";
-import { Stringifier } from "postcss";
 
-type Category = {
-  id: string;
-  name: string;
-  products: number;
-  created_at: string;
-};
+import type { Category } from "@/types/category";
 
 export default function Page() {
   const { closeModal, openModal } = useContext(ModalContext);
@@ -91,15 +85,6 @@ export default function Page() {
     openModal();
     setIsRemoveCategoryModalOpen(true);
   };
-
-  const formateDate = (dateToFormat: string) => {
-    const date = new Date(dateToFormat);
-    return date.toLocaleString("pt--BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
-  }
 
   return (
     <div

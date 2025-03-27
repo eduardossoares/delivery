@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { ReactNode } from "react";
 import "@/app/globals.css";
 
+import CartProvider from "@/contexts/CartContext";
+
 import { Geist } from "next/font/google";
 
 const geistSans = Geist({
@@ -19,9 +21,7 @@ export default function Layout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="pt-BR" className={geistSans.className}>
-      <body className="antialised">
-          {children}
-      </body>
+      <body className="antialised">{children}</body>
     </html>
   );
 }

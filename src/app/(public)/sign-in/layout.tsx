@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: "Seu serviço de delivery!",
 };
 
-export default function LoginLayout({
+export default function SignInLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (

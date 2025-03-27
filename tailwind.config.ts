@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
   	extend: {
+		backgroundImage: {
+			"pattern-food": "url('/public/banner.png')",
+		},
+		
   		colors: {
   			orangePrimary: '#F38200',
   			grayPrimary: '#F3F3F3',

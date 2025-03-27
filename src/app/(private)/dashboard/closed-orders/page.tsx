@@ -6,8 +6,6 @@ import { useContext } from "react";
 import { ModalContext } from "@/contexts/ModalContext";
 import { setupAPIClient } from "@/services/api";
 
-import { Order } from "../page";
-
 import {
   Table,
   TableBody,
@@ -26,7 +24,10 @@ import {
 } from "@/components/ui/tooltip";
 
 import { BsThreeDots } from "react-icons/bs";
+
 import OrderDetailModal from "@/components/OrderDetailModal";
+
+import type { Order } from "@/types/order";
 
 export default function Page() {
   const { closeModal, openModal } = useContext(ModalContext);

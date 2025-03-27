@@ -10,6 +10,8 @@ type ModalContextData = {
   openConfirmationModal: () => void;
   isRemoveItemModalOpen: boolean;
   openRemoveItemModal: () => void;
+  isCartModalOpen: boolean;
+  openCartModal: () => void;
 };
 
 const ModalContext = createContext({} as ModalContextData);
@@ -18,11 +20,13 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [isConfirmationModalOpen, setIsConfimationModalOpen] = useState(false);
   const [isRemoveItemModalOpen, setIsRemoveItemModalOpen] = useState(false);
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const closeModal = () => {
     setIsModalOpened(false);
     setIsConfimationModalOpen(false);
     setIsRemoveItemModalOpen(false);
+    setIsCartModalOpen(false);
   };
 
   const openModal = () => {
@@ -37,6 +41,11 @@ export function ModalProvider({ children }: { children: ReactNode }) {
     setIsRemoveItemModalOpen(true);
   };
 
+  const openCartModal = () => {
+    setIsCartModalOpen(true);
+    console.log(isCartModalOpen);
+  };
+
   return (
     <ModalContext.Provider
       value={{
@@ -47,6 +56,8 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         openConfirmationModal,
         isRemoveItemModalOpen,
         openRemoveItemModal,
+        isCartModalOpen,
+        openCartModal
       }}
     >
       {children}

@@ -33,21 +33,9 @@ import CreateProductModal from "@/components/CreateProductModal";
 import { setupAPIClient } from "@/services/api";
 import Image from "next/image";
 
-type Product = {
-  id: string;
-  banner: string;
-  name: string;
-  price: string;
-  description: string;
-  category_id: string;
-  created_at: Date;
-};
+import type { ProductItem } from "@/types/foodItem";
+import type { Category } from "@/types/category";
 
-type Category = {
-  id: string;
-  name: string;
-  products: Product[];
-};
 
 export default function Page() {
   const { closeModal, openModal, openRemoveItemModal, isRemoveItemModalOpen } =
@@ -59,7 +47,7 @@ export default function Page() {
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
 
   const [categories, setCategories] = useState<Category[]>();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductItem[]>([]);
 
   const [getProductId, setGetProductId] = useState("");
 
