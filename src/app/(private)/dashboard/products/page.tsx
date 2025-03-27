@@ -153,7 +153,7 @@ export default function Page() {
                                     height={32}
                                     className="rounded-full w-6 h-6"
                                     alt="Hi"
-                                    src={`https://api-delivery-three.vercel.app/api/files/${product.banner}`}
+                                    src={`${product.banner}`}
                                   />
                                   <p className="truncate w-12 sm:w-auto">
                                     {product.name}
