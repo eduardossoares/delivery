@@ -1,8 +1,5 @@
 "use client";
 
-import logoImage from "@/../public/logo.svg";
-import illustrationImage from "@/../public/illustration.svg";
-
 import Image from "next/image";
 import Button from "@/components/Button";
 import LoginInputLabel from "@/components/LoginInputLabel";
@@ -61,7 +58,7 @@ export default function SignIn() {
         <Image
           className="w-96 xl:w-[500px]"
           alt="Ilustração"
-          src={illustrationImage}
+          src="/logo.svg"
         />
       </div>
 
@@ -69,7 +66,7 @@ export default function SignIn() {
         className="w-full md:w-[46rem] lg:w-[54rem] flex flex-col items-center justify-center 
       px-4 lg:px-16 gap-y-24"
       >
-        <Image alt="Logo" src={logoImage} />
+        <Image alt="Logo" src="/illustration.svg" />
 
         <div className="w-full text-center">
           <h1 className="font-bold text-2xl">Seja Bem-Vindo!</h1>

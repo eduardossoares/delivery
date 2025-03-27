@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,9 +24,17 @@
       }
     ],
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "src/*"
+      ],
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    ".next/types/**/*.ts",
+    "images.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
