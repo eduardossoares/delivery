@@ -35,7 +35,7 @@ export default function Modal({ styles, children, isCartModal }: ModalProps) {
             exit={{ scale: 0.8 }}
             transition={{ duration: 0.4 }}
             className={`bg-white w-full sm:w-[546px] rounded-md relative ${styles} ${
-              isCartModal && "lg:w-[1336px] lg:mx-4 overflow-y-auto"
+              isCartModal && "lg:w-[1336px] lg:mx-4 overflow-y-auto pb-6"
             } ${cartItems.length === 0 ? "lg:w-[546px]" : "lg:h-[90%] h-[80%]"}`}
           >
             {children}
