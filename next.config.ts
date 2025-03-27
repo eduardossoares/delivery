@@ -1,13 +1,13 @@
-module.exports = {
+const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '*.vercel.app',
-        // port: '3333',
-        // pathname: '**',
-        // search: '',
+        protocol: "https",
+        hostname: "api-delivery-three.vercel.app", // Substitua pelo domínio real
+        port: "",
+        pathname: "/api/files/**",
       },
     ],
   },
-}
+};
+module.exports = nextConfig;
