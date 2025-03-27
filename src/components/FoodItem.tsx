@@ -35,7 +35,7 @@ export default function FoodItem({ item }: FoodCardProps) {
     w-full break-all">
       <div className="relative max-[320px]:w-40 max-[390px]:w-52 w-64 h-full xl:h-full">
         <Image
-          src={`https://delivery-anotaja.vercel.app/api/files/${item.banner}`}
+          src={`https://api-delivery-three.vercel.app/api/files/${item.banner}`}
           alt={item.name}
           fill
           className="object-cover w-full h-full rounded-md"
