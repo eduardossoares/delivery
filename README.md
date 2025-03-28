@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Delivery Frontend 🚀
 
-## Getting Started
+Um frontend funcional para um sistema de delivery, construído com **Next.js** e **TypeScript**. Este projeto simula uma experiência real de compra online, desde adicionar produtos ao carrinho até gerenciar pedidos em um dashboard protegido. Feito para mostrar habilidades práticas em desenvolvimento web a recrutadores e desenvolvedores curiosos.
 
-First, run the development server:
+## Sobre o Projeto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Imagine um delivery onde clientes escolhem produtos, fazem pedidos e a equipe gerencia tudo em tempo real. Este frontend entrega exatamente isso: uma solução prática e bem estruturada, usando ferramentas modernas como **Tailwind CSS** para design ágil e **Zod** com **React Hook Form** para formulários confiáveis. É uma prova de como resolver problemas reais com código limpo e responsivo.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Funcionalidades Principais
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Catálogo Interativo**: Adicione produtos ao carrinho e finalize pedidos com um formulário simples.
+- **Dashboard Seguro**: Faça login para ver pedidos pendentes, finalizá-los e consultar histórico.
+- **Gerenciamento Completo**: Crie, edite e remova categorias e produtos, tudo conectado.
+- **Design Adaptável**: Funciona perfeitamente em qualquer dispositivo.
 
-## Learn More
+## Como Funciona na Prática
 
-To learn more about Next.js, take a look at the following resources:
+- Navegue pelo catálogo, adicione um produto ao carrinho e preencha o formulário. O pedido aparece no dashboard após login.
+- No dashboard, finalize pedidos e gerencie categorias/produtos com um CRUD intuitivo.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tecnologias que Dominam o Projeto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Next.js**: Estrutura e performance otimizada.
+- **TypeScript**: Segurança no código.
+- **Tailwind CSS & ShadcnUI**: Estilo rápido e moderno.
+- **Context API**: Estado simples e eficiente.
+- **Zod & React Hook Form**: Validação e formulários sem dor de cabeça.
+- **Axios**: Chamadas a APIs externas.
 
-## Deploy on Vercel
+## Decisões Técnicas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Escolhi **Context API** em vez de Redux para manter o estado leve e simples.
+- Usei **Tailwind** com **ShadcnUI** para acelerar o design sem sacrificar personalização.
+- **Zod** foi integrado ao **React Hook Form** para validação robusta, mostrando atenção a detalhes.
