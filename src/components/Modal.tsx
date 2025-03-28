@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ModalContext } from "@/contexts/ModalContext";
 
 import { ReactNode } from "react";
@@ -16,6 +16,27 @@ interface ModalProps extends HTMLMotionProps<"div"> {
 export default function Modal({ styles, children, isCartModal }: ModalProps) {
   const { isModalOpened } = useContext(ModalContext);
   const { cartItems } = useContext(CartContext);
+
+  useEffect(() => {
+      if (isModalOpened) {
+        document.body.style.overflow = "hidden";
+        document.body.style.height = "100%";
+        document.documentElement.style.overflow = "hidden";
+        document.documentElement.style.height = "100%";
+      } else {
+        document.body.style.overflow = "";
+        document.body.style.height = "";
+        document.documentElement.style.overflow = "";
+        document.documentElement.style.height = "";
+      }
+  
+      return () => {
+        document.body.style.overflow = "";
+        document.body.style.height = "";
+        document.documentElement.style.overflow = "";
+        document.documentElement.style.height = "";
+      };
+    }, [isModalOpened]);
 
   return (
     <AnimatePresence>
@@ -36,7 +57,7 @@ export default function Modal({ styles, children, isCartModal }: ModalProps) {
             transition={{ duration: 0.4 }}
             className={`bg-white w-full sm:w-[546px] rounded-md relative ${styles} ${
               isCartModal && "lg:w-[1336px] lg:mx-4 overflow-y-auto pb-6"
-            } ${cartItems?.length === 0 ? "lg:w-[546px] h-auto" : "lg:h-[90%] h-[80%]"}`}
+            } ${cartItems?.length > 0 ? "lg:h-[90%] h-[80%]" : "lg:w-[546px] h-auto"}`}
           >
             {children}
           </motion.div>

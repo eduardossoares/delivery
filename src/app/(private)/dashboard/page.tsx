@@ -26,7 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { setupAPIClient } from "@/services/api"
+import { setupAPIClient } from "@/services/api";
 
 import { Order } from "@/types/order";
 
@@ -152,6 +152,7 @@ export default function Page() {
 
       {isOrderDetailModalOpen && (
         <OrderDetailModal
+          isAOpenOrder={true}
           orderId={orderId}
           closeModalFunction={closeOrderDetail}
         />

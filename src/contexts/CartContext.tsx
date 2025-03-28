@@ -41,7 +41,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         ]);
       })
       .catch((error) => console.log(error));
-    toast.success("Produto adicionado ao carrinho!");
+    toast.success("Produto adicionado ao carrinho!"); // Preciso ajustar a lógica
   };
 
   const removeItemFromCart = async (itemId: string) => {
@@ -60,7 +60,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const resetCart = async () => {
     setCartItems([]);
-  }
+  };
 
   return (
     <CartContext.Provider

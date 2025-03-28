@@ -47,27 +47,6 @@ export default function Catalog() {
     getProducts();
   }, []);
 
-  useEffect(() => {
-    if (isCartModalOpen) {
-      document.body.style.overflow = "hidden";
-      document.body.style.height = "100%";
-      document.documentElement.style.overflow = "hidden";
-      document.documentElement.style.height = "100%";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.height = "";
-      document.documentElement.style.overflow = "";
-      document.documentElement.style.height = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.height = "";
-      document.documentElement.style.overflow = "";
-      document.documentElement.style.height = "";
-    };
-  }, [isCartModalOpen]);
-
   return (
     <div className="max-w-7xl mx-auto px-4 pb-12 h-full">
       <Header />

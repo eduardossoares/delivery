@@ -175,7 +175,7 @@ export default function OrderDetailModal({
                           <FaCaretRight className="text-orangePrimary" />
                           <p className="text-sm flex flex-row items-center gap-x-2">
                             {item?.product?.name} ({item?.amount})
-                            <p>- R${parseFloat(item?.product?.price)}</p>
+                            <span>- R${parseFloat(item?.product?.price)}</span>
                           </p>
                         </div>
                         <p className="text-xs text-zinc-600">
@@ -231,7 +231,7 @@ export default function OrderDetailModal({
           </div>
         </Modal>
       )}
-      
+
       {isConfirmationModalOpen && (
         <ConfirmationModal
           isACloseOrder={true}
@@ -240,7 +240,7 @@ export default function OrderDetailModal({
           confirmationMessage={`Você tem certeza que gostaria de finalizar o pedido?`}
         />
       )}
-      
+
       {!isConfirmationModalOpen && isAClosedOrder && (
         <Modal>
           <div className="py-8 sm:py-4 px-8 sm:px-4">
